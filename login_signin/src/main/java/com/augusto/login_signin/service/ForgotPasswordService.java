@@ -3,6 +3,7 @@ package com.augusto.login_signin.service;
 import com.augusto.login_signin.dto.ForgotPasswordRequest;
 import com.augusto.login_signin.model.User;
 import com.augusto.login_signin.repository.UserRepository;
+import com.augusto.login_signin.utils.PasswordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class ForgotPasswordService {
 
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            user.setPassword(request.getNewPassword()); // depois vamos criptografar
+            user.setPassword(PasswordUtils.hashPassword(request.getNewPassword()));
             userRepository.save(user);
             return true;
         }
