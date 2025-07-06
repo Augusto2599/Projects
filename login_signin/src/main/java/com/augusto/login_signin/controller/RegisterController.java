@@ -1,9 +1,11 @@
 package com.augusto.login_signin.controller;
 
+import com.augusto.login_signin.dto.ApiResponse;
 import com.augusto.login_signin.dto.RegisterRequest;
 import com.augusto.login_signin.service.RegisterService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,8 +19,12 @@ public class RegisterController {
     private RegisterService registerService;
 
     @PostMapping("/register")
-    public String register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<ApiResponse> register(@RequestBody RegisterRequest request) {
         boolean success = registerService.register(request);
-        return success ? "Usuário cadastrado com sucesso!" : "E-mail já está em uso.";
+        if (success) {
+            return ResponseEntity.ok(new ApiResponse(true, "Usuário cadastrado com sucesso!"));
+        } else {
+            return ResponseEntity.status(400).body(new ApiResponse(false, "E-mail já está em uso."));
+        }
     }
 }
