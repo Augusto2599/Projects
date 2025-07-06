@@ -2,6 +2,7 @@ package com.augusto.login_signin.controller;
 
 import com.augusto.login_signin.dto.RegisterRequest;
 import com.augusto.login_signin.service.RegisterService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +17,7 @@ public class RegisterController {
     private RegisterService registerService;
 
     @PostMapping("/register")
-    public String register(@RequestBody RegisterRequest request) {
+    public String register(@Valid @RequestBody RegisterRequest request) {
         boolean success = registerService.register(request);
         return success ? "Usuário cadastrado com sucesso!" : "E-mail já está em uso.";
     }
