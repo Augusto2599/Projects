@@ -2,6 +2,7 @@ package com.augusto.payment_API.service.iml;
 
 import com.augusto.payment_API.dto.PagamentoRequest;
 import com.augusto.payment_API.dto.PagamentoResponse;
+import com.augusto.payment_API.exception.RecursoNaoEncontradoException;
 import com.augusto.payment_API.model.Pagamento;
 import com.augusto.payment_API.model.StatusPagamento;
 import com.augusto.payment_API.repository.PagamentoRepository;
@@ -10,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class PagamentoServiceImpl implements PagamentoService {
@@ -35,5 +37,27 @@ public class PagamentoServiceImpl implements PagamentoService {
         pagamento = pagamentoRepository.save(pagamento);
 
         return modelMapper.map(pagamento, PagamentoResponse.class);
+    }
+
+    @Override
+    public PagamentoResponse buscarPorId(Long id) {
+        Pagamento pagamento = pagamentoRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Pagamento com ID " + id + " não encontrado."));
+        return modelMapper.map(pagamento, PagamentoResponse.class);
+    }
+
+    @Override
+    public List<PagamentoResponse> listarTodos() {
+        return pagamentoRepository.findAll()
+                .stream()
+                .map(p -> modelMapper.map(p, PagamentoResponse.class))
+                .toList();
+    }
+
+    @Override
+    public void deletar(Long id) {
+        Pagamento pagamento = pagamentoRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Pagamento com ID " + id + " não encontrado."));
+        pagamentoRepository.delete(pagamento);
     }
 }
